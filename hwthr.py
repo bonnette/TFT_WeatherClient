@@ -50,10 +50,7 @@ FORMAT_DATE = "%b %d, %Y" # USA date format
 FORMAT_TIME = "%I:%M %p %Z" # Hours:Minutes + AM/PM for the USA
 
 # ----------------------------------------------------------
-# Images in current directory
-PHOTO_REBOOT = 'system_REBOOT.png'
-PHOTO_SHUTDOWN = 'system_shutdown.png'
-# ----------------------------------------------------------
+
 # Time-stamp logger; API is like C-language printf
 def logger(arg_format, *arg_list):
         now = time.strftime("%Y-%m-%d %H:%M:%S ", time.localtime())
@@ -95,19 +92,15 @@ def getcomma(haystack,n):
 #-------------------------------------------------------------------
 # Talk to operator
 
-def proc_reboot():
+def proc_exitr():
 
-	tk_root.destroy()
-
-def proc_shutdown():
-
-	tk_root.destroy()
+        sys.exit()
 
 def talk_to_operator(event):
         if flag_debugging:
                 logger("%s: DEBUG talk_to_operator begin", MYNAME)
         tk_popup = Tk()
-        tk_popup.title("Go back, Reboot, or Shutdown?")
+        tk_popup.title("Exit App")
         tk_popup.attributes("-fullscreen", False)
         tk_popup.configure(background=BG_COLOR_POPUP)
         tk_popup.geometry(WINDOW_SIZE_POPUP)
@@ -115,12 +108,9 @@ def talk_to_operator(event):
                  font=(FONT_NAME, FONT_POPUP_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL)
         b_goback.focus_set()
         b_goback.pack(fill="both", expand=True)
-        b_REBOOT = Button(tk_popup, text='Reboot', command=proc_reboot,
+        b_EXITR = Button(tk_popup, text='Exit', command=proc_exitr,
                                         font=(FONT_NAME, FONT_POPUP_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL)
-        b_shutdown = Button(tk_popup, text='Shutdown', command=proc_shutdown,
-                                        font=(FONT_NAME, FONT_POPUP_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL)
-        b_REBOOT.pack(fill="both", expand=True)
-        b_shutdown.pack(fill="both", expand=True)
+        b_EXITR.pack(fill="both", expand=True)
         if flag_debugging:
                 logger("%s: DEBUG talk_to_operator going back to tk_popup.mainloop", MYNAME)
         tk_popup.mainloop()
