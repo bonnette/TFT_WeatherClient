@@ -27,8 +27,8 @@ URL_REQUEST_TIMEOUT_SEC = 60
 COUNT_START = 20 # Fetch weather every 20th main loop execution
 count_down = 0 # Fetch weather data from URL_LEFT when =0
 flag_url = False
-str_temp = 'No temperature yet'
-str_humidity = 'No condition yet'
+str_temp = 'Network Error'
+str_humidity = 'Check Network'
 comma_no = 0
 
 # ----------------------------------------------------------
