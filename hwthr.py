@@ -31,6 +31,7 @@ str_temp = 'Network Error'
 str_humidity = 'Check Network'
 str_wind = '0'
 str_dir = 'None'
+str_dirtxt = 'None'
 comma_no = 0
 
 # ----------------------------------------------------------
@@ -77,6 +78,62 @@ if sys.version_info[0] < 3:
 # Import Python 3 libraries
 from tkinter import *
 import urllib.request
+
+#------------------------------------------------------------------
+# Wind Direction
+
+def windconvert(numdir):
+    if numdir >= 0 and numdir < 22:
+        direction = 'North'     
+        return direction
+    elif numdir >= 22 and numdir < 45:
+        direction = 'NNE'
+        return direction
+    elif numdir >= 45 and numdir < 67:
+        direction = 'NE'
+        return direction
+    elif numdir >= 67 and numdir < 90:
+        direction = 'ENE'
+        return direction
+    elif numdir >= 90 and numdir < 112:
+        direction = 'East'
+        return direction
+    elif numdir >= 112 and numdir < 135:
+        direction = 'ESE'
+        return direction
+    elif numdir >= 135 and numdir < 157:
+        direction = 'SE'
+        return direction
+    elif numdir >= 157 and numdir < 180:
+        direction = 'SSE'
+        return direction
+    elif numdir >= 180 and numdir < 202:
+        direction = 'South'
+        return direction
+    elif numdir >= 202 and numdir < 225:
+        direction = 'SSW'
+        return direction
+    elif numdir >= 225 and numdir < 247:
+        direction = 'SW'
+        return direction
+    elif numdir >= 247 and numdir < 270:
+        direction = 'WSW'
+        return direction
+    elif numdir >= 270 and numdir < 292:
+        direction = 'West'
+        return direction
+    elif numdir >= 292 and numdir < 315:
+        direction = 'WNW'
+        return direction
+    elif numdir >= 315 and numdir < 337:
+        direction = 'NW'
+        return direction
+    elif numdir >= 337 and numdir < 359:
+        direction = 'NNW'
+        return direction
+    else:
+        return 'None'
+
 
 #-------------------------------------------------------------------
 # comma index function
@@ -182,6 +239,7 @@ def get_display_data():
                         str_wind = str_wthrdat[comma_no-4:comma_no] # We use the index number returned to extract the speed
                         comma_no = getcomma(str_wthrdat,8)          # We want the wind direction which is just before the 8th comma
                         str_dir = str_wthrdat[comma_no-5:comma_no] # We use the index number returned to extract the dir
+                        str_dirtxt = windconvert(float(str_dir))
                         url_handle.close()
                         flag_url = True
                         if flag_debugging:
@@ -198,18 +256,18 @@ def get_display_data():
         str_time = time.strftime(FORMAT_TIME, now)
         if flag_debugging:
                 logger("%s: DEBUG Display date = %s, time = %s, temp = %s F humidity = %s %% Speed = %s mph Dir = %s ",
-                                MYNAME, str_date, str_time, str_temp, str_humidity, str_wind, str_dir)
+                                MYNAME, str_date, str_time, str_temp, str_humidity, str_wind, str_dirtxt)
 #                print(flag_url)
 #                print(parsed_json)
 
-        return( str_date, str_time, str_temp, str_humidity, str_wind, str_dir )
+        return( str_date, str_time, str_temp, str_humidity, str_wind, str_dirtxt )
 
 # ----------------------------------------------------------
 # Procedure: Main Loop
 def display_main_procedure():
         if flag_debugging:
                 logger("%s: DEBUG display_main_procedure begin", MYNAME)
-        ( str_date, str_time, str_temp, str_humidity, str_wind, str_dir ) = get_display_data()
+        ( str_date, str_time, str_temp, str_humidity, str_wind, str_dirtxt ) = get_display_data()
         display_date.config(text=str_date)
         display_time.config(text=str_time)
         if flag_url:
@@ -220,7 +278,7 @@ def display_main_procedure():
                 display_cur_humidity.config(fg=FG_COLOR_ABNORMAL)
         display_cur_temp.config(text="%s F" % str_temp)
         display_cur_humidity.config(text="%s %% " % str_humidity)
-        display_cur_wind.config(text="%s - %s Mph" % (str_dir, str_wind))
+        display_cur_wind.config(text="%s - %s Mph" % (str_dirtxt, str_wind))
         if flag_debugging:
                 logger("%s: DEBUG display_main_procedure going back to sleep", MYNAME)
         tk_root.after(SLEEP_TIME_MSEC, display_main_procedure)
