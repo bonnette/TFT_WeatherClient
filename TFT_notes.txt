@@ -1,0 +1,11 @@
+
+Edit the autostart file:
+
+sudo nano /home/pi/.config/lxsession/LXDE-pi/autostart
+
+Add:
+
+@python3 /home/pi/hwthr.py
+
+to the bottom
+
