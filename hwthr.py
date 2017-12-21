@@ -220,7 +220,7 @@ def display_main_procedure():
                 display_cur_humidity.config(fg=FG_COLOR_ABNORMAL)
         display_cur_temp.config(text="%s F" % str_temp)
         display_cur_humidity.config(text="%s %% " % str_humidity)
-        display_cur_wind.config(text="%s MPH" % str_wind)
+        display_cur_wind.config(text="%s - %s Mph" % (str_dir, str_wind))
         if flag_debugging:
                 logger("%s: DEBUG display_main_procedure going back to sleep", MYNAME)
         tk_root.after(SLEEP_TIME_MSEC, display_main_procedure)
