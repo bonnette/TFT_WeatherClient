@@ -38,7 +38,7 @@ comma_no = 0
 WINDOW_SIZE_ROOT = "480x320"
 WINDOW_SIZE_POPUP = "320x200"
 FONT_NAME = 'helvetica'
-FONT_SIZE = 40
+FONT_SIZE = 30
 SM_FONT_SIZE = 20
 FONT_POPUP_SIZE = 24
 FONT_STYLE = 'normal'
@@ -150,6 +150,9 @@ display_cur_temp.pack()
 display_cur_humidity = Label(tk_root, font=(FONT_NAME, FONT_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL, bg=BG_COLOR_ROOT)
 display_cur_humidity.pack()
 
+display_cur_wind = Label(tk_root, font=(FONT_NAME, FONT_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL, bg=BG_COLOR_ROOT)
+display_cur_wind.pack()
+
 display_spacer2 = Label(tk_root, font=(FONT_NAME, SPACER_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL, bg=BG_COLOR_ROOT)
 display_spacer2.pack()
 display_spacer2.config(text=" ")
@@ -199,14 +202,14 @@ def get_display_data():
 #                print(flag_url)
 #                print(parsed_json)
 
-        return( str_date, str_time, str_temp, str_humidity )
+        return( str_date, str_time, str_temp, str_humidity, str_wind, str_dir )
 
 # ----------------------------------------------------------
 # Procedure: Main Loop
 def display_main_procedure():
         if flag_debugging:
                 logger("%s: DEBUG display_main_procedure begin", MYNAME)
-        ( str_date, str_time, str_temp, str_humidity ) = get_display_data()
+        ( str_date, str_time, str_temp, str_humidity, str_wind, str_dir ) = get_display_data()
         display_date.config(text=str_date)
         display_time.config(text=str_time)
         if flag_url:
@@ -217,6 +220,7 @@ def display_main_procedure():
                 display_cur_humidity.config(fg=FG_COLOR_ABNORMAL)
         display_cur_temp.config(text="%s F" % str_temp)
         display_cur_humidity.config(text="%s %% " % str_humidity)
+        display_cur_wind.config(text="%s MPH" % str_wind)
         if flag_debugging:
                 logger("%s: DEBUG display_main_procedure going back to sleep", MYNAME)
         tk_root.after(SLEEP_TIME_MSEC, display_main_procedure)
