@@ -9,7 +9,7 @@
 # 2017-12-19 11:37:33,,0,-1,4.04,-54.00,4.92,93.20,5.15,24.00,0.00,0.00,0.00,0.00,0.00,0.00,V:1,NONE ,", 
 # "id": "1", "name": "HomeWeather", "connected": true}
 #---------------------------------------------------------------
-# We extract the data starting from the '"' counting the commas. The data before the first comma 1 = Outside Temperature 'C'
+# We extract the data starting from the "wthrdata.dat" file counting the commas. The data before the first comma 1 = Outside Temperature 'C'
 # comma 2 = Humidity, 3 = Indoor temp 'C', 4 = Barometric pressure hpa, 5 = Altitude k, 6 = current wind speed kph, 7 = wind gust kph, 8 = rain total, ........16 = Date and Time
 ##--------------------------------------------------------------
 
@@ -22,7 +22,7 @@ SLEEP_TIME_MSEC = SLEEP_TIME_SEC*1000 # milliseconds
 
 # ----------------------------------------------------------
 # Weather station url info
-FULL_URL = 'http://192.168.0.196/wthrdata.dat'
+FULL_URL = 'http://192.168.0.196/wthrdata.dat' # set up url for wthrdata.dat
 URL_REQUEST_TIMEOUT_SEC = 60
 COUNT_START = 20 # Fetch weather every 20th main loop execution
 count_down = 0 # Fetch weather data from URL_LEFT when =0
@@ -37,6 +37,7 @@ WINDOW_SIZE_ROOT = "480x320"
 WINDOW_SIZE_POPUP = "320x200"
 FONT_NAME = 'helvetica'
 FONT_SIZE = 40
+SM_FONT_SIZE = 20
 FONT_POPUP_SIZE = 24
 FONT_STYLE = 'normal'
 SPACER_SIZE = 20
@@ -79,7 +80,8 @@ import urllib.request
 # comma index function
 # returns the index number of a comma
 # "needle" defines the charater we want to find. "haystack" is the text we will search through.
-# "n" is the number of "," we want to find. "start" holds the index number into the text we want to return back to the program.
+# "n" is the number of commas we want to find. "start" holds the index number for the text we want to return back to the program.
+# Example: Indoor Temp is the third comma into the data. So if we want to get the indoor temp data n will = 3
 
 def getcomma(haystack,n):
         needle = ','
@@ -89,12 +91,15 @@ def getcomma(haystack,n):
             n -= 1
         return start
 
-#-------------------------------------------------------------------
-# Talk to operator
+#------------------------------------------------------------------
+# Exit procedure initiated by Exit Button
 
 def proc_exitr():
 
         sys.exit()
+
+#-------------------------------------------------------------------
+# Exit button popup window
 
 def talk_to_operator(event):
         if flag_debugging:
@@ -108,9 +113,9 @@ def talk_to_operator(event):
                  font=(FONT_NAME, FONT_POPUP_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL)
         b_goback.focus_set()
         b_goback.pack(fill="both", expand=True)
-        b_EXITR = Button(tk_popup, text='Exit', command=proc_exitr,
+        b_exitr = Button(tk_popup, text='Exit', command=proc_exitr,
                                         font=(FONT_NAME, FONT_POPUP_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL)
-        b_EXITR.pack(fill="both", expand=True)
+        b_exitr.pack(fill="both", expand=True)
         if flag_debugging:
                 logger("%s: DEBUG talk_to_operator going back to tk_popup.mainloop", MYNAME)
         tk_popup.mainloop()
@@ -118,6 +123,7 @@ def talk_to_operator(event):
 
 # ----------------------------------------------------------
 # Initialize Tk
+
 tk_root = Tk()
 tk_root.attributes("-fullscreen", True)
 # set BG color and turn off cursor
@@ -129,6 +135,7 @@ display_spacer1.config(text=" ")
 
 # ----------------------------------------------------------
 # Build display lines
+
 display_date = Label(tk_root, font=(FONT_NAME, FONT_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL, bg=BG_COLOR_ROOT)
 display_date.pack()
 
@@ -138,8 +145,8 @@ display_time.pack()
 display_cur_temp = Label(tk_root, font=(FONT_NAME, FONT_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL, bg=BG_COLOR_ROOT)
 display_cur_temp.pack()
 
-display_cur_cond = Label(tk_root, font=(FONT_NAME, FONT_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL, bg=BG_COLOR_ROOT)
-display_cur_cond.pack()
+display_cur_humidity = Label(tk_root, font=(FONT_NAME, FONT_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL, bg=BG_COLOR_ROOT)
+display_cur_humidity.pack()
 
 display_spacer2 = Label(tk_root, font=(FONT_NAME, SPACER_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL, bg=BG_COLOR_ROOT)
 display_spacer2.pack()
@@ -157,13 +164,13 @@ def get_display_data():
                 count_down = COUNT_START
                 try:
                         url_handle = urllib.request.urlopen(FULL_URL, None, URL_REQUEST_TIMEOUT_SEC)
-                        data = url_handle.read()
+                        data = url_handle.read()                    # gets the weather data from weather station
                         encoding = url_handle.info().get_content_charset('utf-8')
                         parsed_json = json.loads(data.decode(encoding))
                         str_wthrdat = parsed_json['FullDataString'] # places weather data into variable
                         comma_no = getcomma(str_wthrdat,1)          # We want the outdoor temperature which is just before the first comma.
                         str_temp = str_wthrdat[comma_no-4:comma_no] # We use the index number returned to extract the outdoor temperature
-                        str_temp = ('%.2f' % ((float(str_temp) * 1.8) + 32)) # Convert "C" to Farenheite
+                        str_temp = ('%.1f' % ((float(str_temp) * 1.8) + 32)) # Convert "C" to Farenheite
                         comma_no = getcomma(str_wthrdat,2)          # We want the humidity which jst before the second comma
                         str_humidity = str_wthrdat[comma_no-4:comma_no] # We use the index number returned to extract the humidity
                         url_handle.close()
@@ -181,7 +188,7 @@ def get_display_data():
         str_date = time.strftime(FORMAT_DATE, now)
         str_time = time.strftime(FORMAT_TIME, now)
         if flag_debugging:
-                logger("%s: DEBUG Display date = %s, time = %s, temp = %s F - %s %%",
+                logger("%s: DEBUG Display date = %s, time = %s, temp = %s F humidity = %s %%",
                                 MYNAME, str_date, str_time, str_temp, str_humidity)
 #                print(flag_url)
 #                print(parsed_json)
@@ -198,12 +205,12 @@ def display_main_procedure():
         display_time.config(text=str_time)
         if flag_url:
                 display_cur_temp.config(fg=FG_COLOR_NORMAL)
-                display_cur_cond.config(fg=FG_COLOR_NORMAL)
+                display_cur_humidity.config(fg=FG_COLOR_NORMAL)
         else:
                 display_cur_temp.config(fg=FG_COLOR_ABNORMAL)
-                display_cur_cond.config(fg=FG_COLOR_ABNORMAL)
+                display_cur_humidity.config(fg=FG_COLOR_ABNORMAL)
         display_cur_temp.config(text="%s F" % str_temp)
-        display_cur_cond.config(text="%s %% " % str_humidity)
+        display_cur_humidity.config(text="%s %% " % str_humidity)
         if flag_debugging:
                 logger("%s: DEBUG display_main_procedure going back to sleep", MYNAME)
         tk_root.after(SLEEP_TIME_MSEC, display_main_procedure)
