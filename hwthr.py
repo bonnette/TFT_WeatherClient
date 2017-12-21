@@ -38,8 +38,8 @@ comma_no = 0
 WINDOW_SIZE_ROOT = "480x320"
 WINDOW_SIZE_POPUP = "320x200"
 FONT_NAME = 'helvetica'
-FONT_SIZE = 30
-SM_FONT_SIZE = 20
+FONT_SIZE = 40
+SM_FONT_SIZE = 12
 FONT_POPUP_SIZE = 24
 FONT_STYLE = 'normal'
 SPACER_SIZE = 20
@@ -138,7 +138,7 @@ display_spacer1.config(text=" ")
 # ----------------------------------------------------------
 # Build display lines
 
-display_date = Label(tk_root, font=(FONT_NAME, FONT_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL, bg=BG_COLOR_ROOT)
+display_date = Label(tk_root, font=(FONT_NAME, SM_FONT_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL, bg=BG_COLOR_ROOT)
 display_date.pack()
 
 display_time = Label(tk_root, font=(FONT_NAME, FONT_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL, bg=BG_COLOR_ROOT)
