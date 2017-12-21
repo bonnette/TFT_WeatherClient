@@ -24,11 +24,13 @@ SLEEP_TIME_MSEC = SLEEP_TIME_SEC*1000 # milliseconds
 # Weather station url info
 FULL_URL = 'http://192.168.0.196/wthrdata.dat' # set up url for wthrdata.dat
 URL_REQUEST_TIMEOUT_SEC = 60
-COUNT_START = 20 # Fetch weather every 20th main loop execution
+COUNT_START = 0 # Fetch weather every 20th main loop execution
 count_down = 0 # Fetch weather data from URL_LEFT when =0
 flag_url = False
 str_temp = 'Network Error'
 str_humidity = 'Check Network'
+str_wind = '0'
+str_dir = 'None'
 comma_no = 0
 
 # ----------------------------------------------------------
@@ -171,8 +173,12 @@ def get_display_data():
                         comma_no = getcomma(str_wthrdat,1)          # We want the outdoor temperature which is just before the first comma.
                         str_temp = str_wthrdat[comma_no-4:comma_no] # We use the index number returned to extract the outdoor temperature
                         str_temp = ('%.1f' % ((float(str_temp) * 1.8) + 32)) # Convert "C" to Farenheite
-                        comma_no = getcomma(str_wthrdat,2)          # We want the humidity which jst before the second comma
+                        comma_no = getcomma(str_wthrdat,2)          # We want the humidity which is just before the second comma
                         str_humidity = str_wthrdat[comma_no-4:comma_no] # We use the index number returned to extract the humidity
+                        comma_no = getcomma(str_wthrdat,6)          # We want the wind speed which is just before the 6th comma
+                        str_wind = str_wthrdat[comma_no-4:comma_no] # We use the index number returned to extract the speed
+                        comma_no = getcomma(str_wthrdat,8)          # We want the wind direction which is just before the 8th comma
+                        str_dir = str_wthrdat[comma_no-5:comma_no] # We use the index number returned to extract the dir
                         url_handle.close()
                         flag_url = True
                         if flag_debugging:
@@ -188,8 +194,8 @@ def get_display_data():
         str_date = time.strftime(FORMAT_DATE, now)
         str_time = time.strftime(FORMAT_TIME, now)
         if flag_debugging:
-                logger("%s: DEBUG Display date = %s, time = %s, temp = %s F humidity = %s %%",
-                                MYNAME, str_date, str_time, str_temp, str_humidity)
+                logger("%s: DEBUG Display date = %s, time = %s, temp = %s F humidity = %s %% Speed = %s mph Dir = %s ",
+                                MYNAME, str_date, str_time, str_temp, str_humidity, str_wind, str_dir)
 #                print(flag_url)
 #                print(parsed_json)
 
