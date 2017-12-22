@@ -157,6 +157,14 @@ def proc_exitr():
 
         sys.exit()
 
+#------------------------------------------------------------------
+def proc_shutdown():
+
+        if flag_debugging:
+                logger("%s: DEBUG proc_shutdown begin", MYNAME)
+        args = ['sudo', 'shutdown', 'now']
+        cp = subprocess.run(args, stdout=subprocess.PIPE)
+
 #-------------------------------------------------------------------
 # Exit button popup window
 
@@ -168,13 +176,22 @@ def talk_to_operator(event):
         tk_popup.attributes("-fullscreen", False)
         tk_popup.configure(background=BG_COLOR_POPUP)
         tk_popup.geometry(WINDOW_SIZE_POPUP)
+# Go Back Button
         b_goback = Button(tk_popup, text="Go Back", command=tk_popup.destroy,
                  font=(FONT_NAME, FONT_POPUP_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL)
         b_goback.focus_set()
         b_goback.pack(fill="both", expand=True)
+
+# Exit to OS button
         b_exitr = Button(tk_popup, text='Exit', command=proc_exitr,
                                         font=(FONT_NAME, FONT_POPUP_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL)
         b_exitr.pack(fill="both", expand=True)
+
+# Shutdown Pi button (necessary to prevent corruption)
+        b_shutdown = Button(tk_popup, text='Shutdown', command=proc_shutdown,
+                                        font=(FONT_NAME, FONT_POPUP_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL)
+        b_shutdown.pack(fill="both", expand=True)
+
         if flag_debugging:
                 logger("%s: DEBUG talk_to_operator going back to tk_popup.mainloop", MYNAME)
         tk_popup.mainloop()
@@ -240,6 +257,7 @@ def get_display_data():
                         comma_no = getcomma(str_wthrdat,8)          # We want the wind direction which is just before the 8th comma
                         str_dir = str_wthrdat[comma_no-5:comma_no] # We use the index number returned to extract the dir
                         str_dirtxt = windconvert(float(str_dir))
+                        str_wind = str_wind.strip('0')
                         url_handle.close()
                         flag_url = True
                         if flag_debugging:
