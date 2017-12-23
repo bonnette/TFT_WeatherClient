@@ -16,12 +16,13 @@
 import os, time, sys, subprocess, json
 
 MYNAME = 'home_weather'
-flag_debugging = True
+flag_debugging = False
 SLEEP_TIME_SEC = 60
 SLEEP_TIME_MSEC = SLEEP_TIME_SEC*1000 # milliseconds
 
 # ----------------------------------------------------------
 # Weather station url info
+
 FULL_URL = 'http://192.168.0.196/wthrdata.dat' # set up url for wthrdata.dat
 URL_REQUEST_TIMEOUT_SEC = 60
 COUNT_START = 0 # Fetch weather every 20th main loop execution
@@ -36,6 +37,7 @@ comma_no = 0
 
 # ----------------------------------------------------------
 # Video display parameters
+
 WINDOW_SIZE_ROOT = "480x320"
 WINDOW_SIZE_POPUP = "320x200"
 FONT_NAME = 'helvetica'
@@ -54,8 +56,8 @@ FORMAT_DATE = "%b %d, %Y" # USA date format
 FORMAT_TIME = "%I:%M %p %Z" # Hours:Minutes + AM/PM for the USA
 
 # ----------------------------------------------------------
-
 # Time-stamp logger; API is like C-language printf
+
 def logger(arg_format, *arg_list):
         now = time.strftime("%Y-%m-%d %H:%M:%S ", time.localtime())
         fmt = "{nstr} {fstr}".format(nstr=now, fstr=arg_format)
@@ -64,18 +66,21 @@ def logger(arg_format, *arg_list):
 
 # ----------------------------------------------------------
 # Exit immediately if this is an SSH session
+
 if 'SSH_CLIENT' in os.environ or 'SSH_TTY' in os.environ:
         logger("%s: Running in SSH session; exiting", MYNAME)
         exit(0)
 
 # ----------------------------------------------------------
 # Must be Python 3.x
+
 if sys.version_info[0] < 3:
         logger("%s: *** Requires Python 3", MYNAME)
         exit(86)
 
 # ----------------------------------------------------------
 # Import Python 3 libraries
+
 from tkinter import *
 import urllib.request
 
@@ -233,6 +238,7 @@ display_spacer2.config(text=" ")
 
 # ----------------------------------------------------------
 # Procedure: Get date, time, farenheit-temperature, and celsius-temperature
+
 def get_display_data():
         global count_down, str_temp, str_humidity, flag_url
         if flag_debugging:
@@ -257,7 +263,7 @@ def get_display_data():
                         comma_no = getcomma(str_wthrdat,8)          # We want the wind direction which is just before the 8th comma
                         str_dir = str_wthrdat[comma_no-5:comma_no] # We use the index number returned to extract the dir
                         str_dirtxt = windconvert(float(str_dir))
-                        str_wind = str_wind.strip('0')
+                        str_wind = str_wind.lstrip('0') # get rid of leading zero
                         url_handle.close()
                         flag_url = True
                         if flag_debugging:
@@ -272,16 +278,17 @@ def get_display_data():
         now = time.localtime()
         str_date = time.strftime(FORMAT_DATE, now)
         str_time = time.strftime(FORMAT_TIME, now)
+        str_time = str_time.lstrip('0') # Get rid of leading zero
         if flag_debugging:
                 logger("%s: DEBUG Display date = %s, time = %s, temp = %s F humidity = %s %% Speed = %s mph Dir = %s ",
                                 MYNAME, str_date, str_time, str_temp, str_humidity, str_wind, str_dirtxt)
 #                print(flag_url)
 #                print(parsed_json)
-
         return( str_date, str_time, str_temp, str_humidity, str_wind, str_dirtxt )
 
 # ----------------------------------------------------------
 # Procedure: Main Loop
+
 def display_main_procedure():
         if flag_debugging:
                 logger("%s: DEBUG display_main_procedure begin", MYNAME)
@@ -303,6 +310,7 @@ def display_main_procedure():
 
 # ----------------------------------------------------------
 # Enter Tk mainloop
+
 tk_root.after(0, display_main_procedure)
 tk_root.bind('<ButtonPress>', talk_to_operator)
 tk_root.mainloop()
