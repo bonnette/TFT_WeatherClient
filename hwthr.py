@@ -263,12 +263,15 @@ def get_display_data():
                         str_humidity = str_wthrdat[comma_no-4:comma_no] # We use the index number returned to extract the humidity
                         comma_no = getcomma(str_wthrdat,6)          # We want the wind speed which is just before the 6th comma
                         str_wind = str_wthrdat[comma_no-4:comma_no] # We use the index number returned to extract the speed
+                        str_wind = ('%.1f' % (float(str_wind) * 0.62137119223733)) # convert kph to mph
+                        str_wind = str_wind.lstrip('0') # get rid of leading zero
                         comma_no = getcomma(str_wthrdat,7)          # We want the wind gust which is just before the 7th comma
                         str_gust = str_wthrdat[comma_no-4:comma_no] # We use the index number returned to extract the gust
+                        str_gust = ('%.1f' % (float(str_gust) * 0.62137119223733)) # convert kph to mph
+                        str_gust = str_gust.lstrip('0') # get rid of leading zero
                         comma_no = getcomma(str_wthrdat,8)          # We want the wind direction which is just before the 8th comma
                         str_dir = str_wthrdat[comma_no-5:comma_no] # We use the index number returned to extract the dir
                         str_dirtxt = windconvert(float(str_dir))
-                        str_wind = str_wind.lstrip('0') # get rid of leading zero
                         comma_no = getcomma(str_wthrdat,4)          # We want the barometric pressure which is just before the 4th comma
                         str_press = str_wthrdat[comma_no-8:comma_no]
                         str_press = ('%.2f' % ((float(str_press)/33.863)/100))
