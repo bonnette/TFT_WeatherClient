@@ -31,6 +31,7 @@ flag_url = False
 str_temp = 'Network Error'
 str_humidity = 'Check Network'
 str_wind = '0'
+str_gust = '0'
 str_press = '0'
 str_dir = 'None'
 str_dirtxt = 'None'
@@ -262,6 +263,8 @@ def get_display_data():
                         str_humidity = str_wthrdat[comma_no-4:comma_no] # We use the index number returned to extract the humidity
                         comma_no = getcomma(str_wthrdat,6)          # We want the wind speed which is just before the 6th comma
                         str_wind = str_wthrdat[comma_no-4:comma_no] # We use the index number returned to extract the speed
+                        comma_no = getcomma(str_wthrdat,7)          # We want the wind gust which is just before the 7th comma
+                        str_gust = str_wthrdat[comma_no-4:comma_no] # We use the index number returned to extract the gust
                         comma_no = getcomma(str_wthrdat,8)          # We want the wind direction which is just before the 8th comma
                         str_dir = str_wthrdat[comma_no-5:comma_no] # We use the index number returned to extract the dir
                         str_dirtxt = windconvert(float(str_dir))
@@ -284,12 +287,12 @@ def get_display_data():
         str_time = time.strftime(FORMAT_TIME, now)
         str_time = str_time.lstrip('0') # Get rid of leading zero
         if flag_debugging:
-                logger("%s: DEBUG Display date = %s, time = %s, temp = %s F humidity = %s %% Speed = %s mph Dir = %s %s ",
-                                MYNAME, str_date, str_time, str_temp, str_humidity, str_wind, str_dirtxt, str_press)
+                logger("%s: DEBUG Display date = %s, time = %s, temp = %s F humidity = %s %% Speed = %s mph Dir = %s %s Gust = %s ",
+                                MYNAME, str_date, str_time, str_temp, str_humidity, str_wind, str_dirtxt, str_press, str_gust)
 #                print(flag_url)
 #                print(str_press)
 #                print(parsed_json)
-        return( str_date, str_time, str_temp, str_humidity, str_wind, str_dirtxt, str_press )
+        return( str_date, str_time, str_temp, str_humidity, str_wind, str_dirtxt, str_press, str_gust )
 
 # ----------------------------------------------------------
 # Procedure: Main Loop
@@ -297,7 +300,7 @@ def get_display_data():
 def display_main_procedure():
         if flag_debugging:
                 logger("%s: DEBUG display_main_procedure begin", MYNAME)
-        ( str_date, str_time, str_temp, str_humidity, str_wind, str_dirtxt, str_press ) = get_display_data()
+        ( str_date, str_time, str_temp, str_humidity, str_wind, str_dirtxt, str_press, str_gust ) = get_display_data()
         display_date.config(text=str_date)
         display_time.config(text=str_time)
         if flag_url:
@@ -308,7 +311,7 @@ def display_main_procedure():
                 display_cur_humidity.config(fg=FG_COLOR_ABNORMAL)
         display_cur_temp.config(text="%s F - %s %%" % (str_temp, str_humidity))
         display_cur_wind.config(text="%s - %s Mph" % (str_dirtxt, str_wind))
-        display_cur_pressure.config(text="%s " % str_press)
+        display_cur_pressure.config(text="Gst %s - %s" % (str_gust, str_press))
         if flag_debugging:
                 logger("%s: DEBUG display_main_procedure going back to sleep", MYNAME)
         tk_root.after(SLEEP_TIME_MSEC, display_main_procedure)
