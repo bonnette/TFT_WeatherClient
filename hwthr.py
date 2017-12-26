@@ -16,7 +16,7 @@
 import os, time, sys, subprocess, json
 
 MYNAME = 'home_weather'
-flag_debugging = True
+flag_debugging = False
 SLEEP_TIME_SEC = 60
 SLEEP_TIME_MSEC = SLEEP_TIME_SEC*1000 # milliseconds
 
@@ -227,11 +227,11 @@ display_time.pack()
 display_cur_temp = Label(tk_root, font=(FONT_NAME, FONT_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL, bg=BG_COLOR_ROOT)
 display_cur_temp.pack()
 
-display_cur_humidity = Label(tk_root, font=(FONT_NAME, FONT_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL, bg=BG_COLOR_ROOT)
-display_cur_humidity.pack()
-
 display_cur_wind = Label(tk_root, font=(FONT_NAME, FONT_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL, bg=BG_COLOR_ROOT)
 display_cur_wind.pack()
+
+display_cur_pressure = Label(tk_root, font=(FONT_NAME, FONT_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL, bg=BG_COLOR_ROOT)
+display_cur_pressure.pack()
 
 display_spacer2 = Label(tk_root, font=(FONT_NAME, SPACER_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL, bg=BG_COLOR_ROOT)
 display_spacer2.pack()
@@ -253,6 +253,7 @@ def get_display_data():
                         data = url_handle.read()                    # gets the weather data from weather station
                         encoding = url_handle.info().get_content_charset('utf-8')
                         parsed_json = json.loads(data.decode(encoding))
+                        url_handle.close()
                         str_wthrdat = parsed_json['FullDataString'] # places weather data into variable
                         comma_no = getcomma(str_wthrdat,1)          # We want the outdoor temperature which is just before the first comma.
                         str_temp = str_wthrdat[comma_no-4:comma_no] # We use the index number returned to extract the outdoor temperature
@@ -268,7 +269,6 @@ def get_display_data():
                         comma_no = getcomma(str_wthrdat,4)          # We want the barometric pressure which is just before the 4th comma
                         str_press = str_wthrdat[comma_no-8:comma_no]
                         str_press = ('%.2f' % ((float(str_press)/33.863)/100))
-                        url_handle.close()
                         flag_url = True
                         if flag_debugging:
                                 logger("%s: DEBUG weather access success", MYNAME)
@@ -302,13 +302,13 @@ def display_main_procedure():
         display_time.config(text=str_time)
         if flag_url:
                 display_cur_temp.config(fg=FG_COLOR_NORMAL)
-                display_cur_humidity.config(fg=FG_COLOR_NORMAL)
+                display_cur_pressure.config(fg=FG_COLOR_NORMAL)
         else:
                 display_cur_temp.config(fg=FG_COLOR_ABNORMAL)
                 display_cur_humidity.config(fg=FG_COLOR_ABNORMAL)
-        display_cur_temp.config(text="%s F - %s" % (str_temp, str_press))
-        display_cur_humidity.config(text="%s %% " % str_humidity)
+        display_cur_temp.config(text="%s F - %s %%" % (str_temp, str_humidity))
         display_cur_wind.config(text="%s - %s Mph" % (str_dirtxt, str_wind))
+        display_cur_pressure.config(text="%s " % str_press)
         if flag_debugging:
                 logger("%s: DEBUG display_main_procedure going back to sleep", MYNAME)
         tk_root.after(SLEEP_TIME_MSEC, display_main_procedure)
