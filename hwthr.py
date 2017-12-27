@@ -51,7 +51,7 @@ SPACER_SIZE = 20
 BUTTON_WIDTH = 6
 BUTTON_HEIGHT = 2
 FG_COLOR_NORMAL = 'white'
-FG_COLOR_WEATHER = 'gold2'
+FG_COLOR_WEATHER = 'gold'
 FG_COLOR_DATE = 'steelblue'
 FG_COLOR_ABNORMAL = 'red'
 BG_COLOR_ROOT = 'black'
@@ -214,9 +214,9 @@ tk_root.attributes("-fullscreen", True)
 # set BG color and turn off cursor
 tk_root.configure(background=BG_COLOR_ROOT,cursor='none')
 tk_root.geometry(WINDOW_SIZE_ROOT)
-display_spacer1 = Label(tk_root, font=(FONT_NAME, SPACER_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL,bg=BG_COLOR_ROOT)
-display_spacer1.pack()
-display_spacer1.config(text=" ")
+#display_spacer1 = Label(tk_root, font=(FONT_NAME, SPACER_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL,bg=BG_COLOR_ROOT)
+#display_spacer1.pack()
+#display_spacer1.config(text=" ")
 
 # ----------------------------------------------------------
 # Build display lines
@@ -230,7 +230,7 @@ display_time.pack()
 display_cur_temp = Label(tk_root, font=(FONT_NAME, FONT_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL, bg=BG_COLOR_ROOT)
 display_cur_temp.pack()
 
-display_cur_wind = Label(tk_root, font=(FONT_NAME, FONT_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL, bg=BG_COLOR_ROOT)
+display_cur_wind = Label(tk_root, font=(FONT_NAME, FONT_SIZE, FONT_STYLE), fg=FG_COLOR_WEATHER, bg=BG_COLOR_ROOT)
 display_cur_wind.pack()
 
 display_cur_pressure = Label(tk_root, font=(FONT_NAME, FONT_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL, bg=BG_COLOR_ROOT)
@@ -309,8 +309,8 @@ def display_main_procedure():
         display_date.config(text=str_date)
         display_time.config(text=str_time)
         if flag_url:
-                display_cur_temp.config(fg=FG_COLOR_NORMAL)
-                display_cur_pressure.config(fg=FG_COLOR_NORMAL)
+                display_cur_temp.config(fg=FG_COLOR_WEATHER)
+                display_cur_pressure.config(fg=FG_COLOR_WEATHER)
         else:
                 display_cur_temp.config(fg=FG_COLOR_ABNORMAL)
                 display_cur_humidity.config(fg=FG_COLOR_ABNORMAL)
