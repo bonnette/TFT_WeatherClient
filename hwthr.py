@@ -325,7 +325,7 @@ def display_main_procedure():
 # Enter Tk mainloop
 
 tk_root.after(0, display_main_procedure)
-tk_root.bind('<ButtonPress>', talk_to_operator)
+display_cur_pressure.bind('<ButtonPress>', talk_to_operator) #Assign bottom line of display as exit button
 tk_root.mainloop()
 
 logger("%s: tk_root left mainloop", MYNAME)
