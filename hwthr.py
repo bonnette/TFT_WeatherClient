@@ -51,6 +51,8 @@ SPACER_SIZE = 20
 BUTTON_WIDTH = 6
 BUTTON_HEIGHT = 2
 FG_COLOR_NORMAL = 'white'
+FG_COLOR_WEATHER = 'gold2'
+FG_COLOR_DATE = 'steelblue'
 FG_COLOR_ABNORMAL = 'red'
 BG_COLOR_ROOT = 'black'
 BG_COLOR_POPUP = BG_COLOR_ROOT
@@ -219,10 +221,10 @@ display_spacer1.config(text=" ")
 # ----------------------------------------------------------
 # Build display lines
 
-display_date = Label(tk_root, font=(FONT_NAME, SM_FONT_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL, bg=BG_COLOR_ROOT)
+display_date = Label(tk_root, font=(FONT_NAME, SM_FONT_SIZE, FONT_STYLE), fg=FG_COLOR_DATE, bg=BG_COLOR_ROOT)
 display_date.pack()
 
-display_time = Label(tk_root, font=(FONT_NAME, FONT_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL, bg=BG_COLOR_ROOT)
+display_time = Label(tk_root, font=(FONT_NAME, FONT_SIZE, FONT_STYLE), fg=FG_COLOR_DATE, bg=BG_COLOR_ROOT)
 display_time.pack()
 
 display_cur_temp = Label(tk_root, font=(FONT_NAME, FONT_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL, bg=BG_COLOR_ROOT)
@@ -234,9 +236,9 @@ display_cur_wind.pack()
 display_cur_pressure = Label(tk_root, font=(FONT_NAME, FONT_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL, bg=BG_COLOR_ROOT)
 display_cur_pressure.pack()
 
-display_spacer2 = Label(tk_root, font=(FONT_NAME, SPACER_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL, bg=BG_COLOR_ROOT)
-display_spacer2.pack()
-display_spacer2.config(text=" ")
+#display_spacer2 = Label(tk_root, font=(FONT_NAME, SPACER_SIZE, FONT_STYLE), fg=FG_COLOR_NORMAL, bg=BG_COLOR_ROOT)
+#display_spacer2.pack()
+#display_spacer2.config(text=" ")
 
 # ----------------------------------------------------------
 # Procedure: Get date, time, farenheit-temperature, and celsius-temperature
@@ -314,7 +316,7 @@ def display_main_procedure():
                 display_cur_humidity.config(fg=FG_COLOR_ABNORMAL)
         display_cur_temp.config(text="%s F - %s %%" % (str_temp, str_humidity))
         display_cur_wind.config(text="%s - %s Mph" % (str_dirtxt, str_wind))
-        display_cur_pressure.config(text="Gst %s - %s" % (str_gust, str_press))
+        display_cur_pressure.config(text="Gust %s - %s" % (str_gust, str_press))
         if flag_debugging:
                 logger("%s: DEBUG display_main_procedure going back to sleep", MYNAME)
         tk_root.after(SLEEP_TIME_MSEC, display_main_procedure)
